@@ -1,6 +1,7 @@
 import urllib.request
 
 from bs4 import BeautifulSoup
+from main.models import Book
 
 
 def scrapContemporany():
@@ -9,9 +10,9 @@ def scrapContemporany():
     html = f.read()
     f.close()
     soup = BeautifulSoup(html, 'lxml')
-    books = soup.find_all('div', class_='mod-list-item')
-    for i in range(1):
-        f = urllib.request.urlopen('https://www.casadellibro.com/libros/novela-contemporanea/128000000/p'+ str(i+1))
+    pages = soup.find('span', class_='fnt09im').text.split(" ")[3]
+    for i in range(int(pages)):
+        f = urllib.request.urlopen('https://www.casadellibro.com/libros/novela-contemporanea/128000000/p' + str(i + 1))
         html = f.read()
         f.close()
         soup = BeautifulSoup(html, 'lxml')
@@ -43,6 +44,15 @@ def scrapContemporany():
                     encuadernacion = detail.text[16:]
             if (details.find('div', class_='col02') != None):
                 resumen = details.find('div', class_='col02').find('p')
+            binding = ""
+            if(encuadernacion == "Tapa dura"):
+                binding = "D"
+            elif(encuadernacion == "Tapa blanda"):
+                binding = "B"
+            synopsis = ""
+            if(resumen != None):
+                synopsis = resumen.text
+            print(title)
+            Book.objects.create(title=title, bookURL=bookURL, author=author, coverURL=imageURL, npages=npages,
+                            editorial=editorial, language=lengua, category="Contemporánea", binding=binding, synopsis=synopsis)
 
-
-scrapContemporany()

@@ -11,9 +11,9 @@ class Book(models.Model):
     language = models.CharField(max_length=50)
     binding = models.CharField(max_length=50, choices=(('B', 'Tapa blanda'),('D','Tapa dura'),))
     category = models.CharField(max_length=50, choices=(('Contemporánea', 'Contemporánea'),))
-    synopsis = models.CharField(max_length=1000, null=True)
+    synopsis = models.TextField(null=True)
 
     def __str__(self):
-        return self.titulo
+        return self.title
 
 
