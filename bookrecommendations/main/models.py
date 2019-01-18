@@ -9,8 +9,10 @@ class Book(models.Model):
     npages = models.IntegerField()
     editorial = models.CharField(max_length=50)
     language = models.CharField(max_length=50)
-    binding = models.CharField(max_length=50, choices=(('Tapa blanda', 'Tapa blanda'),('Tapa dura','Tapa dura'),))
-    category = models.CharField(max_length=50, choices=(('Contemporánea', 'Contemporánea'),('Negra', 'Negra')))
+    binding = models.CharField(max_length=50, choices=(('Tapa blanda', 'Tapa blanda'), ('Tapa dura', 'Tapa dura'),))
+    category = models.CharField(max_length=50, choices=(
+        ('Contemporánea', 'Contemporánea'), ('Negra', 'Negra'), ('Romántica', 'Romántica'), ('Cómics', 'Cómics'),
+        ('Historia', 'Historia') ,('Adolescentes', 'Adolescentes'), ('Infantil', 'Infantil')))
     synopsis = models.TextField(null=True)
 
     def __str__(self):
@@ -24,5 +26,3 @@ class Rating(models.Model):
 
     def __str__(self):
         return str(self.id) + " - " + str(self.rating)
-
-

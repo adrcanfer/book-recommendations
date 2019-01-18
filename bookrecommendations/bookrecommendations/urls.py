@@ -20,6 +20,7 @@ from main import views
 urlpatterns = [
     path(r'', views.index),
     path('populate/', views.populate),
-    path('book/list/', views.booklist),
+    path('book/list/', views.list_book),
+    path('book/generate_rating/', views.generate_rating),
     path('admin/', admin.site.urls),
 ]
