@@ -32,7 +32,7 @@ def scrapContemporany():
             npages = 0
             editorial = ""
             lengua = ""
-            encuadernacion = ""
+            binding = ""
             for detail in detailsli:
                 if (detail.text[0:15] == "Nº de páginas: "):
                     npages = int(detail.text[15:18])
@@ -41,14 +41,10 @@ def scrapContemporany():
                 if (detail.text[0:8] == "Lengua: "):
                     lengua = detail.text[8:]
                 if (detail.text[0:16] == "Encuadernación: "):
-                    encuadernacion = detail.text[16:]
+                    binding = detail.text[16:]
             if (details.find('div', class_='col02') != None):
                 resumen = details.find('div', class_='col02').find('p')
-            binding = ""
-            if (encuadernacion == "Tapa dura"):
-                binding = "D"
-            elif (encuadernacion == "Tapa blanda"):
-                binding = "B"
+
             synopsis = ""
             if (resumen != None):
                 synopsis = resumen.text
@@ -112,5 +108,5 @@ def scrapBlack():
             print(Book.objects.filter(title=title).first())
             if (Book.objects.filter(title=title).first() is None and synopsis != ""):
                 Book.objects.create(title=title, bookURL=bookURL, author=author, coverURL=imageURL, npages=npages,
-                                    editorial=editorial, language=lengua, category="Negra", binding=binding,
+                                    editorial=editorial, language=lengua, category="Negra", binding=encuadernacion,
                                     synopsis=synopsis)

@@ -15,3 +15,9 @@ def populate(request):
     scrapping.scrapBlack()
     stop = time.time()
     return HttpResponse(str(stop - start))
+
+
+def booklist(request):
+    books = models.Book.objects.all()
+    return render(request, 'booklist.html', {'books': books})
+

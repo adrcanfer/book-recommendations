@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block contenido %}
+
+    <div class="card-body booklist">
+        {% for book in books %}
+
+            <div class="row">
+                <div class="col-xs-2 col-md-2">
+                    <a href="{{ book.bookURL }}">
+                        <img class="img-responsive" src={{ book.coverURL }} alt="prewiew">
+                    </a>
+                </div>
+                <div class="col-xs-4 col-md-8">
+                    <a href="{{ book.bookURL }}">
+                        <h4 class="product-name"><strong>{{ book.title }}</strong></h4>
+                    </a>
+                    <h5>
+                        {{ book.author }}
+                    </h5>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#collapse{{ book.id }}" role="button"
+                       aria-expanded="false" aria-controls="collapse{{ book.id }}">
+                        Ver resumen
+                    </a>
+                    <div class="collapse" id="collapse{{ book.id }}">
+                        <div class="card card-body">
+                            <h4>
+                                <small>{{ book.synopsis }}</small>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-2 col-md-2">
+                    <h4>Datos del libro</h4>
+                    <p>
+                        <small>Encuadernación: {{ book.binding }}</small>
+                    </p>
+                    <p>
+                        <small>Categoría: {{ book.category }}</small>
+                    </p>
+                    <p>
+                        <small>Número de páginas: {{ book.npages }}</small>
+                    </p>
+                    <p>
+                        <small>Idioma: {{ book.language }}</small>
+                    </p>
+                </div>
+            </div>
+            <hr>
+
+        {% empty %}
+            <h2> No tenemos ningún libro almacenado en la base de datos </h2>
+        {% endfor %}
+    </div>
+{% endblock %}
