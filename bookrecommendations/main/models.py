@@ -17,3 +17,12 @@ class Book(models.Model):
         return self.title
 
 
+class Rating(models.Model):
+    userId = models.IntegerField()
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+
+    def __str__(self):
+        return str(self.id) + " - " + str(self.rating)
+
+
