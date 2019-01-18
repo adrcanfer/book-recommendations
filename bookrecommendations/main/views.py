@@ -12,5 +12,6 @@ def populate(request):
     start = time.time()
     models.Book.objects.all().delete()
     scrapping.scrapContemporany()
+    scrapping.scrapBlack()
     stop = time.time()
     return HttpResponse(str(stop - start))

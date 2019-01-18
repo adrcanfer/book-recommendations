@@ -10,7 +10,7 @@ class Book(models.Model):
     editorial = models.CharField(max_length=50)
     language = models.CharField(max_length=50)
     binding = models.CharField(max_length=50, choices=(('B', 'Tapa blanda'),('D','Tapa dura'),))
-    category = models.CharField(max_length=50, choices=(('Contemporánea', 'Contemporánea'),))
+    category = models.CharField(max_length=50, choices=(('Contemporánea', 'Contemporánea'),('Negra', 'Negra')))
     synopsis = models.TextField(null=True)
 
     def __str__(self):
