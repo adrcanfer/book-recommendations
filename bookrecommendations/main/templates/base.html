@@ -5,7 +5,7 @@
     <title>Booking</title>
 
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}"/>
 
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -28,18 +28,21 @@
 </head>
 <body>
 <header>
-<div><h1>Página web de recomendación de libros</h1></div>
-<nav class="navbar navbar-inverse">
+    <div class="header">
+        <img src="http://www.capitanes.org.ar/wp-content/uploads/2016/06/Header-presentacion-libro.jpg"/>
+    </div>
+
+    <nav class="navbar navbar-inverse">
         <ul class="nav navbar-nav">
             <li><a href="/">Inicio</a></li>
             <li><a href="/book/list">Todos los libros</a></li>
-            <li><a href="/cantantes">Cantantes</a></li>
+            <li><a href="/book/search">Buscar libro</a></li>
             <li><a href="/populate">Cargar libros</a></li>
             <li><a href="/book/generate_rating">Generar puntuaciones</a></li>
         </ul>
-</nav>
+    </nav>
 </header>
-<section class = 'contenido'>
+<section class='contenido'>
     {% block contenido %}{% endblock %}
 </section>
 <footer>
