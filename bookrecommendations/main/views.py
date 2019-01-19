@@ -7,6 +7,7 @@ import time
 from .forms import searchForm
 from whoosh.index import open_dir
 from whoosh.qparser import MultifieldParser
+from main import indexWhoosh
 
 
 def index(request):
@@ -27,6 +28,7 @@ def populate(request):
     scrapping.scrap('https://www.casadellibro.com/libros/comics-adultos/411000000', 'Cómics')
     scrapping.scrap('https://www.casadellibro.com/libros/juvenil/117001014', 'Adolescentes')
     scrapping.scrap('https://www.casadellibro.com/libros/infantil/117000000', 'Infantil')
+    indexWhoosh.indexBooks()
     stop = time.time()
     return HttpResponse(str(stop - start))
 
