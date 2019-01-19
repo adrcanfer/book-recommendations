@@ -5,6 +5,8 @@ from main import scrapping
 from main import models
 import time
 from .forms import searchForm
+from whoosh.index import open_dir
+from whoosh.qparser import MultifieldParser
 
 
 def index(request):
@@ -69,8 +71,15 @@ def search(request):
     if request.method == 'POST':
         form = searchForm(request.POST)
         if form.is_valid():
-            None
-            #DO SOMETHING
+            q = form.cleaned_data["query"]
+
+            ix = open_dir("booksIndex")
+            with ix.searcher() as searcher:
+                qp = MultifieldParser(["title", "author", "editorial", "synopsis"], schema=ix.schema).parse(q.upper())
+                results = searcher.search(qp)
+                for r in results:
+                    print(r["author"])
+
 
             return render(request, 'list_book.html', {'books': None})
     else:
