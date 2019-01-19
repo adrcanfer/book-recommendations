@@ -1,7 +1,10 @@
+import os
+import shutil
 from django.shortcuts import render, HttpResponse
 from main import scrapping
 from main import models
 import time
+from .forms import searchForm
 
 
 def index(request):
@@ -61,3 +64,16 @@ def aux_rating(userid, rating, category):
 def list_book(request):
     books = models.Book.objects.all()
     return render(request, 'list_book.html', {'books': books})
+
+def search(request):
+    if request.method == 'POST':
+        form = searchForm(request.POST)
+        if form.is_valid():
+            None
+            #DO SOMETHING
+
+            return render(request, 'list_book.html', {'books': None})
+    else:
+        form = searchForm()
+
+    return render(request, 'search.html', {'form': form})
