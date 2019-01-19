@@ -1,7 +1,12 @@
+import os
+import shutil
 from django.shortcuts import render, HttpResponse
 from main import scrapping
 from main import models
 import time
+from .forms import searchForm
+from whoosh.index import open_dir
+from whoosh.qparser import MultifieldParser
 
 
 def index(request):
@@ -11,6 +16,8 @@ def index(request):
 
 def populate(request):
     start = time.time()
+    if os.path.exists("booksIndex"):
+        shutil.rmtree("booksIndex")
     models.Book.objects.all().delete()
     scrapping.scrap('https://www.casadellibro.com/libros/novela-contemporanea/128000000', 'Contemporánea')
     scrapping.scrap('https://www.casadellibro.com/libros/romantica-y-erotica/narrativa-romantica/127000000',
@@ -59,3 +66,22 @@ def aux_rating(userid, rating, category):
 def list_book(request):
     books = models.Book.objects.all()
     return render(request, 'list_book.html', {'books': books})
+
+def search(request):
+    if request.method == 'POST':
+        form = searchForm(request.POST)
+        if form.is_valid():
+            q = form.cleaned_data["query"]
+            books = []
+            ix = open_dir("booksIndex")
+            with ix.searcher() as searcher:
+                qp = MultifieldParser(["title", "author", "editorial", "synopsis"], schema=ix.schema).parse(q.upper())
+                results = searcher.search(qp)
+                for r in results:
+                    books.append(models.Book.objects.get(id=r["id"]))
+
+            return render(request, 'list_book.html', {'books': books})
+    else:
+        form = searchForm()
+
+    return render(request, 'search.html', {'form': form})

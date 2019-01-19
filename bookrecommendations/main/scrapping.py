@@ -1,4 +1,11 @@
+import os
+import sys
+
 import urllib.request
+
+from whoosh.index import create_in,open_dir
+from whoosh.fields import *
+from whoosh.qparser import QueryParser, MultifieldParser
 
 from bs4 import BeautifulSoup
 from main.models import Book
@@ -6,8 +13,21 @@ from main.models import Book
 
 scrapping_page_number = 1
 
-
 def scrap(url, category):
+    sys.setrecursionlimit(50000)
+    booksSchema = Schema(id=ID(stored=True), title=TEXT(stored=True),
+                         author=TEXT(stored=True), editorial=TEXT(stored=True), 
+                         binding=TEXT(stored=True), category=TEXT(stored=True),
+                         synopsis=TEXT(stored=True))
+
+    if os.path.exists("booksIndex"):
+        ixBooks = open_dir("booksIndex")
+        writer = ixBooks.writer()
+    else:
+        os.mkdir("booksIndex")
+        ixBooks = create_in("booksIndex", schema=booksSchema)
+        writer = ixBooks.writer()
+
     total = 0
     f = urllib.request.urlopen(url)
     html = f.read()
@@ -53,7 +73,9 @@ def scrap(url, category):
                 synopsis = resumen.text
             print(title)
             if Book.objects.filter(title=title).first() is None and synopsis != "":
-                Book.objects.create(title=title, bookURL=bookURL, author=author, coverURL=imageURL, npages=npages,
-                                    editorial=editorial, language=lengua, category=category, binding=binding,
-                                    synopsis=synopsis)
-
+                b = Book.objects.create(title=title, bookURL=bookURL, author=author, coverURL=imageURL, npages=npages,
+                                        editorial=editorial, language=lengua, category=category, binding=binding,
+                                        synopsis=synopsis)
+                writer.add_document(id=str(b.id), title=title, author=author, editorial=editorial,
+                                    category=category, synopsis=synopsis)
+    writer.commit()

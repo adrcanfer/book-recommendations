@@ -23,4 +23,5 @@ urlpatterns = [
     path('book/list/', views.list_book),
     path('book/generate_rating/', views.generate_rating),
     path('admin/', admin.site.urls),
+    path('book/search/', views.search)
 ]
