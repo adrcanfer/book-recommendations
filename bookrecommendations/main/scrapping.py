@@ -15,9 +15,8 @@ scrapping_page_number = 1
 
 def scrap(url, category):
     sys.setrecursionlimit(50000)
-    booksSchema = Schema(title=TEXT(stored=True), bookURL=ID(stored=True), author=TEXT(stored=True),
-                         coverURL=ID(stored=True), npages=NUMERIC(stored=True),
-                         editorial=TEXT(stored=True), language=TEXT(stored=True),
+    booksSchema = Schema(id=ID(stored=True), title=TEXT(stored=True),
+                         author=TEXT(stored=True), editorial=TEXT(stored=True), 
                          binding=TEXT(stored=True), category=TEXT(stored=True),
                          synopsis=TEXT(stored=True))
 
@@ -74,10 +73,9 @@ def scrap(url, category):
                 synopsis = resumen.text
             print(title)
             if Book.objects.filter(title=title).first() is None and synopsis != "":
-                Book.objects.create(title=title, bookURL=bookURL, author=author, coverURL=imageURL, npages=npages,
-                                    editorial=editorial, language=lengua, category=category, binding=binding,
-                                    synopsis=synopsis)
-                writer.add_document(title=title, bookURL=bookURL, author=author, coverURL=imageURL, npages=npages,
-                                    editorial=editorial, language=lengua, category=category, binding=binding,
-                                    synopsis=synopsis)
+                b = Book.objects.create(title=title, bookURL=bookURL, author=author, coverURL=imageURL, npages=npages,
+                                        editorial=editorial, language=lengua, category=category, binding=binding,
+                                        synopsis=synopsis)
+                writer.add_document(id=str(b.id), title=title, author=author, editorial=editorial,
+                                    category=category, synopsis=synopsis)
     writer.commit()

@@ -72,16 +72,15 @@ def search(request):
         form = searchForm(request.POST)
         if form.is_valid():
             q = form.cleaned_data["query"]
-
+            books = []
             ix = open_dir("booksIndex")
             with ix.searcher() as searcher:
                 qp = MultifieldParser(["title", "author", "editorial", "synopsis"], schema=ix.schema).parse(q.upper())
                 results = searcher.search(qp)
                 for r in results:
-                    print(r["author"])
+                    books.append(models.Book.objects.get(id=r["id"]))
 
-
-            return render(request, 'list_book.html', {'books': None})
+            return render(request, 'list_book.html', {'books': books})
     else:
         form = searchForm()
 
