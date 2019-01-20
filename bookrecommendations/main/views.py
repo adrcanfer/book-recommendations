@@ -4,10 +4,11 @@ from django.shortcuts import render, HttpResponse
 from main import scrapping
 from main import models
 import time
-from .forms import searchForm
+from .forms import searchForm, idForm
 from whoosh.index import open_dir
 from whoosh.qparser import MultifieldParser
 from main import indexWhoosh
+import shelve
 
 
 def index(request):
@@ -69,6 +70,7 @@ def list_book(request):
     books = models.Book.objects.all()
     return render(request, 'list_book.html', {'books': books})
 
+
 def search(request):
     if request.method == 'POST':
         form = searchForm(request.POST)
@@ -86,4 +88,52 @@ def search(request):
     else:
         form = searchForm()
 
+    return render(request, 'search.html', {'form': form})
+
+
+def load_rs(request):
+    start = time.time()
+    shelf = shelve.open('dataRS.dat')
+    users = models.Rating.objects.values('userId').distinct()
+    userrecom = {}
+    for user in users:
+        idusu = user['userId']
+        ratings = models.Rating.objects.filter(userId=idusu)
+        books = models.Book.objects.all()
+        userrecom.setdefault(idusu, [])
+        bookrecom = {}
+        for book in books:
+            if ratings.filter(book=book.id).first() is None:
+                puntu = 0
+                for rating in ratings:
+                    ratpuntu = 0
+                    if rating.book.category == book.category:
+                        ratpuntu += 3
+                    if rating.book.author == book.author:
+                        ratpuntu += 2
+                    ratpuntu *= rating.rating
+                    puntu += ratpuntu
+                bookrecom[book.id] = puntu
+        sortedrecom = sorted(bookrecom.items(), key=lambda x: x[1], reverse=True)[:10]
+        userrecom[idusu] = sortedrecom
+    shelf['userrecom'] = userrecom
+    shelf.close()
+    stop = time.time()
+    return HttpResponse(str(stop-start))
+
+
+def recommendations(request):
+    if request.method == 'POST':
+        form = idForm(request.POST)
+        if form.is_valid():
+            idusu = form.cleaned_data['userId']
+            shelf = shelve.open('dataRS.dat')
+            recom = shelf['userrecom'][idusu]
+            books = []
+            for recommendation in recom:
+                book = models.Book.objects.filter(id=recommendation[0]).first()
+                books.append(book)
+            return render(request, 'list_book.html', {'books': books})
+    else:
+        form = idForm()
     return render(request, 'search.html', {'form': form})
