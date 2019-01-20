@@ -31,11 +31,11 @@ def scrap(url, category):
             f.close()
             detailssoup = BeautifulSoup(html2, 'lxml')
             details = detailssoup.find('div', class_='book-description')
+            detailsli = []
             if details is not None:
                 bookdata = details.find('ul', class_='list07')
                 if bookdata is not None:
                     detailsli = bookdata.find_all('li')
-            detailsli = []
             npages = 0
             editorial = ""
             lengua = ""
