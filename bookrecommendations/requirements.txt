@@ -1,4 +1,4 @@
 Django
 beautifulsoup4
 lxml
-whoosh
+Whoosh

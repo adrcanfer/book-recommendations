@@ -9,7 +9,7 @@ from main import indexWhoosh
 from .forms import searchForm, idForm, registerForm, loginForm, ratingForm
 from whoosh.index import open_dir
 from whoosh.qparser import MultifieldParser
-from .models import Book, Rating
+from .models import Book, Rating, User
 
 
 def index(request):
@@ -37,33 +37,35 @@ def populate(request):
 def generate_rating(request):
     start = time.time()
     models.Rating.objects.all().delete()
+    models.User.objects.all().delete()
     for user in range(6):
+        userCreated = models.User.objects.create(username="user" + str(user + 1), password="user" + str(user + 1))
         for rating in range(20):
             if user == 0:
-                aux_rating(user + 1, rating, "Contemporánea")
+                aux_rating(userCreated, rating, "Contemporánea")
             elif user == 1:
-                aux_rating(user + 1, rating, "Negra")
+                aux_rating(userCreated, rating, "Negra")
             elif user == 2:
-                aux_rating(user + 1, rating, "Romántica")
+                aux_rating(userCreated, rating, "Romántica")
             elif user == 3:
-                aux_rating(user + 1, rating, "Cómics")
+                aux_rating(userCreated, rating, "Cómics")
             elif user == 4:
-                aux_rating(user + 1, rating, "Historia")
+                aux_rating(userCreated, rating, "Historia")
             elif user == 5:
-                aux_rating(user + 1, rating, "Adolescentes")
+                aux_rating(userCreated, rating, "Adolescentes")
             elif user == 6:
-                aux_rating(user + 1, rating, "Infantil")
+                aux_rating(userCreated, rating, "Infantil")
     stop = time.time()
     return HttpResponse(str(stop - start))
 
 
-def aux_rating(userid, rating, category):
+def aux_rating(user, rating, category):
     if rating < 10:
-        blackbooks = models.Book.objects.filter(category=category)
-        models.Rating.objects.create(userId=userid, book=blackbooks[rating], rating=10)
+        categorybooks = models.Book.objects.filter(category=category)
+        models.Rating.objects.create(user=user, book=categorybooks[rating], rating=10)
     else:
-        noblackbooks = models.Book.objects.exclude(category=category)
-        models.Rating.objects.create(userId=userid, book=noblackbooks[rating - 10], rating=2)
+        nocategorybooks = models.Book.objects.exclude(category=category)
+        models.Rating.objects.create(user=user, book=nocategorybooks[rating - 10], rating=2)
 
 
 def list_book(request):
@@ -191,11 +193,12 @@ def rating(request):
                 return HttpResponseRedirect('/')
             rat = form.cleaned_data['rating']
             userId = request.session['loggedId']
+            user = get_object_or_404(User, id= userId)
             book = get_object_or_404(Book, id=bookId)
-            count = Rating.objects.filter(book=book, userId=userId).count()
+            count = Rating.objects.filter(book=book, user=user).count()
             if count > 0:
                 return render(request, 'rated.html', {})
-            Rating.objects.create(userId=userId, book=book, rating=rat)
+            Rating.objects.create(user=user, book=book, rating=rat)
             return render(request, 'thanks.html', {})
     else:
         loggedId = request.session.get('loggedId', None)
@@ -205,7 +208,8 @@ def rating(request):
         if bookId is None or bookId == '':
             return HttpResponseRedirect('/')
         b = get_object_or_404(Book, id=bookId)
-        count = Rating.objects.filter(book=b, userId=loggedId).count()
+        user = get_object_or_404(User, id=loggedId)
+        count = Rating.objects.filter(book=b, user=user).count()
         if count > 0:
             return render(request, 'rated.html', {})
         form = ratingForm(initial={'bookId': bookId})
