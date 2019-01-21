@@ -171,3 +171,10 @@ def login(request):
         form = loginForm()
         res = render(request, 'create.html', {'form': form, 'sendButton': "Iniciar sesión"})
     return res
+
+
+def logout(request):
+    request.session['loggedId'] = -1
+    return HttpResponseRedirect("/")
+
+
