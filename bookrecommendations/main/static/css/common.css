@@ -32,6 +32,10 @@ body{
     padding: 10px 10px 10px 10px;
 }
 
+.ratingName{
+    text-align: center;
+}
+
 .loginform li{
     list-style-type: none;
     color: red;

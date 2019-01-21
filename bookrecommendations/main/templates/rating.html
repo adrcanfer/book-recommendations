@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% block contenido %}
-    <h3>{{name}}</h3>
+<h3 class="ratingName">{{name}}</h3>
+<div class="form">
     <form method=POST>
         {% csrf_token %}
         {{form}}
         <input type="submit"/>
     </form>
+</div>
+
 {% endblock contenido %}
