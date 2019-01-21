@@ -75,7 +75,7 @@ def search(request):
     if request.method == 'POST':
         form = searchForm(request.POST)
         if form.is_valid():
-            q = form.cleaned_data["query"]
+            q = form.cleaned_data["buscar"]
             books = []
             ix = open_dir("booksIndex")
             with ix.searcher() as searcher:

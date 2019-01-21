@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 
 class searchForm(forms.Form):
-    query = forms.CharField(max_length=50)
+    buscar = forms.CharField(max_length=50)
 
 
 class idForm(forms.Form):
