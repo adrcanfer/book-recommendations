@@ -1,0 +1,6 @@
+Django
+beautifulsoup4
+lxml
+whoosh
+django-heroku
+gunicorn
