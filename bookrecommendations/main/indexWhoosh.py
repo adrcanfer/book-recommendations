@@ -6,9 +6,8 @@ from whoosh.qparser import MultifieldParser
 from main.models import Book
 
 def createSchema():
-    booksSchema = Schema(id=ID(stored=True), title=TEXT(stored=True),
-                         author=TEXT(stored=True), editorial=TEXT(stored=True), 
-                         synopsis=TEXT(stored=True))
+    booksSchema = Schema(id=ID(stored=True), title=TEXT, author=TEXT,
+                         editorial=TEXT, synopsis=TEXT)
     if not os.path.exists("booksIndex"):
         os.mkdir("booksIndex")
         create_in("booksIndex", schema=booksSchema)
