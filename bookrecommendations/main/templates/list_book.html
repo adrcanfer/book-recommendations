@@ -82,11 +82,40 @@
                     </p>
                 </div>
             </div>
-            <hr>
             
         {% empty %}
             <h2> No tenemos ningún libro almacenado en la base de datos </h2>
         {% endfor %}
         
+        {% if books.has_other_pages %}
+            <ul class="pagination">
+            <p>Mostrando {{books.start_index}}-{{books.end_index}} de {{books.paginator.count}}</p>
+            {% if books.has_previous%}
+                <li><a href="?page={{books.previous_page_number}}">&laquo;</a></li>
+            {% endif %}
+            {% if books.number > 2 %}
+              <li><a href="?page=1">1</a></li>
+              <li class="disabled"><span>...</span></li>
+            {% endif %}
+
+            {% if books.has_previous %}
+              <li><a href="?page={{ books.previous_page_number }}">{{books.previous_page_number}}</a></li>
+            {% endif %}
+            
+            <li class="active"><span>{{ books.number }} <span class="sr-only">(current)</span></span></li>
+            
+            {% if books.has_next %}
+              <li><a href="?page={{ books.next_page_number }}">{{books.next_page_number}}</a></li>
+            {% endif %}
+ 
+            {% if books.number < books.paginator.num_pages|add:"-1" %}
+                <li class="disabled"><span>...</span></li>
+                <li><a href="?page={{books.paginator.num_pages}}">{{books.paginator.num_pages}}</a></li>
+            {% endif %}
+            {% if books.has_next%}
+                <li><a href="?page={{books.next_page_number}}">&raquo;</a></li>
+            {% endif %}
+            </ul>
+        {% endif %}
     </div>
 {% endblock %}
