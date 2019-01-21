@@ -108,11 +108,12 @@ def search(request):
 def load_rs(request):
     start = time.time()
     shelf = shelve.open('dataRS.dat')
-    users = models.Rating.objects.values('userId').distinct()
+    users = models.Rating.objects.values('user').distinct()
     userrecom = {}
     for user in users:
-        idusu = user['userId']
-        ratings = models.Rating.objects.filter(userId=idusu)
+        idusu = user['user']
+        user = get_object_or_404(User, id=idusu)
+        ratings = models.Rating.objects.filter(user=user)
         books = models.Book.objects.all()
         userrecom.setdefault(idusu, [])
         bookrecom = {}
