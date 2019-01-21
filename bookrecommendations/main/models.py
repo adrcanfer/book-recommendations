@@ -4,16 +4,16 @@ from django.db import models
 class Book(models.Model):
     title = models.CharField(max_length=100)
     bookURL = models.URLField()
-    author = models.CharField(max_length=50)
-    coverURL = models.URLField()
+    author = models.CharField(max_length=100)
     npages = models.IntegerField()
-    editorial = models.CharField(max_length=50)
-    language = models.CharField(max_length=50)
-    binding = models.CharField(max_length=50, choices=(('Tapa blanda', 'Tapa blanda'), ('Tapa dura', 'Tapa dura'),))
-    category = models.CharField(max_length=50, choices=(
+    editorial = models.CharField(max_length=100)
+    language = models.CharField(max_length=100)
+    coverURL = models.URLField()
+    binding = models.CharField(max_length=100, choices=(('Tapa blanda', 'Tapa blanda'), ('Tapa dura', 'Tapa dura'),))
+    category = models.CharField(max_length=100, choices=(
         ('Contemporánea', 'Contemporánea'), ('Negra', 'Negra'), ('Romántica', 'Romántica'), ('Cómics', 'Cómics'),
         ('Historia', 'Historia') ,('Adolescentes', 'Adolescentes'), ('Infantil', 'Infantil')))
-    synopsis = models.TextField(null=True)
+    synopsis = models.TextField(max_length=3000, null=True)
 
     def __str__(self):
         return self.title
