@@ -28,4 +28,5 @@ urlpatterns = [
     path('book/recommendations/', views.recommendations),
     path('user/register/', views.create_user),
     path('user/login/', views.login),
+    path('book/rating/', views.rating)
 ]
