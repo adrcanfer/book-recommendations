@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block contenido %}
+    <table class="table">
+    <tr>
+        <th>Book</th>
+        <th>Rating</th>
+    </tr>
+    {% for r in ratings %}
+        <tr>
+            <td>{{r.book.title}}</td>
+            <td>{{r.rating}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock contenido %}
