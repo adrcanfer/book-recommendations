@@ -21,9 +21,11 @@
                        aria-expanded="false" aria-controls="collapse{{ book.id }}">
                         Ver resumen
                     </a>
+                    {% if request.session.loggedId != None and request.session.loggedId != -1 %}
                     <a href="/book/rating/?q={{book.id}}" class="btn btn-primary" role="button">
                         Puntuar
                     </a>
+                    {% endif %}
                     <div class="collapse" id="collapse{{ book.id }}">
                         <div class="card card-body">
                             <h4>
