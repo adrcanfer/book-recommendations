@@ -2,7 +2,7 @@ import os
 import shutil
 import time
 import shelve
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_object_or_404
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from main import scrapping
 from main import models
 from main import indexWhoosh
@@ -11,10 +11,15 @@ from whoosh.index import open_dir
 from whoosh.qparser import MultifieldParser
 from .models import Book, Rating, User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Sum
 
 
 def index(request):
-    return render(request, 'index.html')
+    books = Rating.objects.values('book').annotate(repro=Sum('rating')).order_by('-rating')
+    libros = []
+    for book in books:
+        libros.append(Book.objects.get(id=book['book']))
+    return render(request, 'list_book.html', {'books': libros[:10]})
 
 
 def populate(request):
@@ -32,7 +37,7 @@ def populate(request):
     scrapping.scrap('https://www.casadellibro.com/libros/infantil/117000000', 'Infantil')
     indexWhoosh.indexBooks()
     stop = time.time()
-    return HttpResponse(str(stop - start))
+    return render(request, 'finished.html', {'time': stop-start, 'process': 'scrapping'})
 
 
 def generate_rating(request):
@@ -57,7 +62,7 @@ def generate_rating(request):
             elif user == 6:
                 aux_rating(userCreated, rating, "Infantil")
     stop = time.time()
-    return HttpResponse(str(stop - start))
+    return render(request, 'finished.html', {'time': stop-start, 'process': 'generación de puntuaciones'})
 
 
 def aux_rating(user, rating, category):
@@ -134,7 +139,7 @@ def load_rs(request):
     shelf['userrecom'] = userrecom
     shelf.close()
     stop = time.time()
-    return HttpResponse(str(stop - start))
+    return render(request, 'finished.html', {'time': stop-start, 'process': 'carga del sistema de recomendación'})
 
 
 def recommendations(request):

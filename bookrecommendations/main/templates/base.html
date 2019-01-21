@@ -35,14 +35,16 @@
                 <li><a href="/">Inicio</a></li>
                 <li><a href="/book/list">Todos los libros</a></li>
                 <li><a href="/book/search">Buscar libro</a></li>
-                <li><a href="/book/recommendations">Descubrir libros</a></li>
+                {% if request.session.loggedId != None and request.session.loggedId >= 0 %}
+                    <li><a href="/book/recommendations">Descubrir libros</a></li>
+                {% endif %}
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Carga de datos
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/populate">Cargar libros</a></li>
                         <li><a href="/book/generate_rating">Generar puntuaciones</a></li>
-                        <li><a href="/book/load_rs">Cargar sistema de recomendacion</a></li>
+                        <li><a href="/book/load_rs">Cargar sistema de recomendación</a></li>
                     </ul>
                 </li>
             </ul>
