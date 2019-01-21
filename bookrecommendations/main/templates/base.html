@@ -47,8 +47,11 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/user/register"><span class="glyphicon glyphicon-user"></span> Registrarse</a></li>
-                <li class="login"><a id="loginlink" href="/user/login"><span class="glyphicon glyphicon-log-in"></span> Iniciar sesión</a></li>
+                {% if request.session.loggedId == None or request.session.loggedId < 0 %}
+                    <li><a href="/user/register"><span class="glyphicon glyphicon-user"></span> Registrarse</a></li>
+                {% endif %}
+                <li class="login"><a id="loginlink" href="/user/login"><span class="glyphicon glyphicon-log-in"></span>
+                    Iniciar sesión</a></li>
             </ul>
         </nav>
     </div>
@@ -64,7 +67,7 @@
 
 <script>
 var login = document.getElementById('loginlink');
-var loggedId = "{{ request.session.loggedId }}"
+var loggedId = "{{ request.session.loggedId }}";
 if(loggedId > 0){
     login.innerHTML = "<span class=\"glyphicon glyphicon-log-out\"></span> Cerrar sesión";
     login.setAttribute('href', '/user/logout');

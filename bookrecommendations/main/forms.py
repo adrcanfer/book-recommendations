@@ -7,10 +7,6 @@ class searchForm(forms.Form):
     buscar = forms.CharField(max_length=50)
 
 
-class idForm(forms.Form):
-    userId = forms.IntegerField()
-
-
 class loginForm(forms.Form):
     username = forms.CharField(max_length=50)
     password = forms.CharField(max_length=50, widget=forms.PasswordInput)

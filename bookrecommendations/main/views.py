@@ -6,7 +6,7 @@ from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_obj
 from main import scrapping
 from main import models
 from main import indexWhoosh
-from .forms import searchForm, idForm, registerForm, loginForm, ratingForm
+from .forms import searchForm, registerForm, loginForm, ratingForm
 from whoosh.index import open_dir
 from whoosh.qparser import MultifieldParser
 from .models import Book, Rating, User
@@ -138,20 +138,20 @@ def load_rs(request):
 
 
 def recommendations(request):
-    if request.method == 'POST':
-        form = idForm(request.POST)
-        if form.is_valid():
-            idusu = form.cleaned_data['userId']
-            shelf = shelve.open('dataRS.dat')
-            recom = shelf['userrecom'][idusu]
-            books = []
-            for recommendation in recom:
-                book = models.Book.objects.filter(id=recommendation[0]).first()
-                books.append(book)
-            return render(request, 'list_book.html', {'books': books})
-    else:
-        form = idForm()
-    return render(request, 'search.html', {'form': form})
+    idusu = request.session.get('loggedId', None)
+    if idusu is None or idusu < 0:
+        return HttpResponseRedirect('/')
+    shelf = shelve.open('dataRS.dat')
+    try:
+        recom = shelf['userrecom'][idusu]
+        books = []
+        for recommendation in recom:
+            book = models.Book.objects.filter(id=recommendation[0]).first()
+            books.append(book)
+    except:
+        books = []
+    shelf.close()
+    return render(request, 'list_book.html', {'books': books})
 
 
 def create_user(request):
