@@ -1,18 +1,17 @@
 import os
 import shutil
-from django.shortcuts import render, HttpResponse
+import time
+import shelve
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from main import scrapping
 from main import models
-import time
-from .forms import searchForm, idForm
+from main import indexWhoosh
+from .forms import searchForm, idForm, registerForm, loginForm
 from whoosh.index import open_dir
 from whoosh.qparser import MultifieldParser
-from main import indexWhoosh
-import shelve
 
 
 def index(request):
-
     return render(request, 'index.html')
 
 
@@ -119,7 +118,7 @@ def load_rs(request):
     shelf['userrecom'] = userrecom
     shelf.close()
     stop = time.time()
-    return HttpResponse(str(stop-start))
+    return HttpResponse(str(stop - start))
 
 
 def recommendations(request):
@@ -137,3 +136,38 @@ def recommendations(request):
     else:
         form = idForm()
     return render(request, 'search.html', {'form': form})
+
+
+def create_user(request):
+    res = None
+    if request.method == 'POST':
+        form = registerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            res = HttpResponseRedirect("/")
+        else:
+            res = render(request, 'create.html', {'form': form, 'sendButton': "Crear usuario"})
+    else:
+        form = registerForm()
+        res = render(request, 'create.html', {'form': form, 'sendButton': "Crear usuario"})
+
+    return res
+
+
+def login(request):
+    res = None
+    if request.method == 'POST':
+        form = loginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = models.User.objects.filter(username=username, password=password)
+            for u in user:
+                request.session['loggedId'] = u.id
+            res = HttpResponseRedirect("/")
+        else:
+            res = render(request, 'create.html', {'form': form, 'sendButton': "Iniciar sesión"})
+    else:
+        form = loginForm()
+        res = render(request, 'create.html', {'form': form, 'sendButton': "Iniciar sesión"})
+    return res

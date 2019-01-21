@@ -26,3 +26,11 @@ class Rating(models.Model):
 
     def __str__(self):
         return str(self.id) + " - " + str(self.rating)
+
+
+class User(models.Model):
+    username = models.CharField(max_length=50, unique=True, error_messages={'unique':"El nombre de usuario ya existe"})
+    password = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.username + " - " + str(self.id)

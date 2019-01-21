@@ -1,3 +1,15 @@
+body{
+    background-color: gainsboro;
+}
+
+.menu {
+    width: 95%;
+    margin: auto;
+}
+
+.login{
+    margin-right: 10px;
+}
 
 .booklist{
     max-width: 1024px;
@@ -10,4 +22,23 @@
     width: 100%;
     margin: auto;
     text-align: center;
+}
+
+.loginform{
+    width: 300px;
+    border: 1px solid black;
+    text-align: center;
+    margin: auto;
+    padding: 10px 10px 10px 10px;
+}
+
+.loginform li{
+    list-style-type: none;
+    color: red;
+}
+
+footer {
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
