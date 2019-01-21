@@ -13,7 +13,7 @@ class Book(models.Model):
     category = models.CharField(max_length=50, choices=(
         ('Contemporánea', 'Contemporánea'), ('Negra', 'Negra'), ('Romántica', 'Romántica'), ('Cómics', 'Cómics'),
         ('Historia', 'Historia') ,('Adolescentes', 'Adolescentes'), ('Infantil', 'Infantil')))
-    synopsis = models.TextField(null=True)
+    synopsis = models.TextField(max_length=3000, null=True)
 
     def __str__(self):
         return self.title
