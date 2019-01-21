@@ -33,3 +33,7 @@ class registerForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(registerForm, self).clean()
         return cleaned_data
+
+class ratingForm(forms.Form):
+    bookId = forms.IntegerField(widget=forms.HiddenInput(), required=True)
+    rating = forms.IntegerField(max_value=10, min_value=0, required=True)

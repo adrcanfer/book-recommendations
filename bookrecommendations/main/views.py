@@ -2,13 +2,14 @@ import os
 import shutil
 import time
 import shelve
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_object_or_404
 from main import scrapping
 from main import models
 from main import indexWhoosh
-from .forms import searchForm, idForm, registerForm, loginForm
+from .forms import searchForm, idForm, registerForm, loginForm, ratingForm
 from whoosh.index import open_dir
 from whoosh.qparser import MultifieldParser
+from .models import Book, Rating
 
 
 def index(request):
@@ -177,4 +178,36 @@ def logout(request):
     request.session['loggedId'] = -1
     return HttpResponseRedirect("/")
 
+
+def rating(request):
+    if request.method == 'POST':
+        loggedId = request.session.get('loggedId', None)
+        if loggedId is None or loggedId == '':
+            return HttpResponseRedirect('/')
+        form = ratingForm(request.POST)
+        if form.is_valid():
+            bookId = form.cleaned_data['bookId']
+            if bookId is None or bookId == '':
+                return HttpResponseRedirect('/')
+            rat = form.cleaned_data['rating']
+            userId = request.session['loggedId']
+            book = get_object_or_404(Book, id=bookId)
+            count = Rating.objects.filter(book=book, userId=userId).count()
+            if count > 0:
+                return render(request, 'rated.html', {})
+            Rating.objects.create(userId=userId, book=book, rating=rat)
+            return render(request, 'thanks.html', {})
+    else:
+        loggedId = request.session.get('loggedId', None)
+        if loggedId is None or loggedId == '':
+            return HttpResponseRedirect('/')
+        bookId = request.GET.get('q', None)
+        if bookId is None or bookId == '':
+            return HttpResponseRedirect('/')
+        b = get_object_or_404(Book, id=bookId)
+        count = Rating.objects.filter(book=b, userId=loggedId).count()
+        if count > 0:
+            return render(request, 'rated.html', {})
+        form = ratingForm(initial={'bookId': bookId})
+        return render(request, 'rating.html', {'name': b.title, 'form': form})
 
