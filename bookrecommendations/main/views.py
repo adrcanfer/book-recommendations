@@ -10,6 +10,7 @@ from .forms import searchForm, idForm, registerForm, loginForm, ratingForm
 from whoosh.index import open_dir
 from whoosh.qparser import MultifieldParser
 from .models import Book, Rating
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def index(request):
@@ -67,7 +68,18 @@ def aux_rating(userid, rating, category):
 
 
 def list_book(request):
-    books = models.Book.objects.all()
+    books_all = models.Book.objects.all()
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(books_all, 10)
+
+    try:
+        books = paginator.page(page)
+    except PageNotAsInteger:
+        books = paginator.page(1)
+    except EmptyPage:
+        books = paginator.age(paginator.num_pages)
+
     return render(request, 'list_book.html', {'books': books})
 
 
@@ -210,4 +222,3 @@ def rating(request):
             return render(request, 'rated.html', {})
         form = ratingForm(initial={'bookId': bookId})
         return render(request, 'rating.html', {'name': b.title, 'form': form})
-
