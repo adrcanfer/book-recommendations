@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block contenido %}
+    <div class="loginform form">
+        <form id ='form' method="post" enctype="multipart/form-data" action=" ">{% csrf_token %}
+    {{ form.as_p }}
+        <p><input type="submit" value={{ sendButton }}/></p>
+    </form>
+    </div>
+{% endblock %}

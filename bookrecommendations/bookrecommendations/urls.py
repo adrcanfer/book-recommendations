@@ -26,4 +26,8 @@ urlpatterns = [
     path('book/search/', views.search),
     path('book/load_rs/', views.load_rs),
     path('book/recommendations/', views.recommendations),
+    path('user/register/', views.create_user),
+    path('user/login/', views.login),
+    path('user/logout/', views.logout),
+    path('book/rating/', views.rating)
 ]

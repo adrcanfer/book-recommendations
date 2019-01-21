@@ -31,24 +31,44 @@
     <div class="header">
         <img src="http://www.capitanes.org.ar/wp-content/uploads/2016/06/Header-presentacion-libro.jpg"/>
     </div>
-
-    <nav class="navbar navbar-inverse">
-        <ul class="nav navbar-nav">
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/book/list">Todos los libros</a></li>
-            <li><a href="/book/search">Buscar libro</a></li>
-            <li><a href="/book/recommendations">Descubrir libros</a></li>
-            <li><a href="/populate">Cargar libros</a></li>
-            <li><a href="/book/generate_rating">Generar puntuaciones</a></li>
-            <li><a href="/book/load_rs">Cargar sistema de recomendacion</a></li>
-        </ul>
-    </nav>
+    <div class="menu">
+        <nav class="navbar navbar-inverse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/book/list">Todos los libros</a></li>
+                <li><a href="/book/search">Buscar libro</a></li>
+                <li><a href="/book/recommendations">Descubrir libros</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Carga de datos
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/populate">Cargar libros</a></li>
+                        <li><a href="/book/generate_rating">Generar puntuaciones</a></li>
+                        <li><a href="/book/load_rs">Cargar sistema de recomendacion</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/user/register"><span class="glyphicon glyphicon-user"></span> Registrarse</a></li>
+                <li class="login"><a id="loginlink" href="/user/login"><span class="glyphicon glyphicon-log-in"></span> Iniciar sesión</a></li>
+            </ul>
+        </nav>
+    </div>
 </header>
 <section class='contenido'>
     {% block contenido %}{% endblock %}
 </section>
 <footer>
-    <p>Proyecto creado para la asignatura AII &copy;2018 </p>
+    <p>Proyecto creado para la asignatura AII &copy;2019 </p>
 </footer>
 </body>
 </html>
+
+<script>
+var login = document.getElementById('loginlink');
+var loggedId = "{{ request.session.loggedId }}"
+if(loggedId > 0){
+    login.innerHTML = "<span class=\"glyphicon glyphicon-log-out\"></span> Cerrar sesión";
+    login.setAttribute('href', '/user/logout');
+}
+</script>
