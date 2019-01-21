@@ -202,7 +202,7 @@ def logout(request):
 def rating(request):
     if request.method == 'POST':
         loggedId = request.session.get('loggedId', None)
-        if loggedId is None or loggedId == '':
+        if loggedId is None or loggedId == '' or loggedId == -1:
             return HttpResponseRedirect('/')
         form = ratingForm(request.POST)
         if form.is_valid():
@@ -220,7 +220,7 @@ def rating(request):
             return render(request, 'thanks.html', {})
     else:
         loggedId = request.session.get('loggedId', None)
-        if loggedId is None or loggedId == '':
+        if loggedId is None or loggedId == '' or loggedId == -1:
             return HttpResponseRedirect('/')
         bookId = request.GET.get('q', None)
         if bookId is None or bookId == '':
@@ -232,3 +232,11 @@ def rating(request):
             return render(request, 'rated.html', {})
         form = ratingForm(initial={'bookId': bookId})
         return render(request, 'rating.html', {'name': b.title, 'form': form})
+
+def ratedBooks(request):
+    loggedId = request.session.get('loggedId', None)
+    if loggedId is None or loggedId == '' or loggedId == -1:
+        return HttpResponseRedirect('/')
+    user = get_object_or_404(User, id=loggedId)
+    ratings = Rating.objects.filter(user=user)
+    return render(request, 'ratedBooks.html', {'ratings':ratings})

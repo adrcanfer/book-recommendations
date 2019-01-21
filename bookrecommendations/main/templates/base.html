@@ -35,6 +35,9 @@
                 <li><a href="/">Inicio</a></li>
                 <li><a href="/book/list">Todos los libros</a></li>
                 <li><a href="/book/search">Buscar libro</a></li>
+                {% if request.session.loggedId != None and request.session.loggedId != -1 %}
+                    <li><a href="/book/rated/">Puntuaciones</a></li>
+                {% endif %}
                 {% if request.session.loggedId != None and request.session.loggedId >= 0 %}
                     <li><a href="/book/recommendations">Descubrir libros</a></li>
                 {% endif %}
