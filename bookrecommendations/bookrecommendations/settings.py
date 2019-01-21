@@ -122,7 +122,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-BASEURL = 'https://booking-ccf.herokuapp.com'
+BASEURL = 'https://reading-ccf.herokuapp.com'
 APIS = {}
 import django_heroku
 django_heroku.settings(locals())
