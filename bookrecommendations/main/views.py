@@ -82,10 +82,10 @@ def list_book(request):
 
     try:
         books = paginator.page(page)
-    except PageNotAsInteger:
+    except PageNotAnInteger:
         books = paginator.page(1)
     except EmptyPage:
-        books = paginator.age(paginator.num_pages)
+        books = paginator.page(paginator.num_pages)
 
     return render(request, 'list_book.html', {'books': books})
 
