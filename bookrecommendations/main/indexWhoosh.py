@@ -1,13 +1,13 @@
 import os
 from whoosh.index import create_in,open_dir
-from whoosh.fields import ID, TEXT, Schema
+from whoosh.fields import ID, TEXT, KEYWORD, Schema
 from whoosh.qparser import MultifieldParser
 
 from main.models import Book
 
 def createSchema():
-    booksSchema = Schema(id=ID(stored=True), title=TEXT, author=TEXT,
-                         editorial=TEXT, synopsis=TEXT)
+    booksSchema = Schema(id=ID(stored=True), title=TEXT, author=KEYWORD,
+                         editorial=ID, synopsis=TEXT)
     if not os.path.exists("booksIndex"):
         os.mkdir("booksIndex")
         create_in("booksIndex", schema=booksSchema)
