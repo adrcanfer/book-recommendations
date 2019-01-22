@@ -43,7 +43,7 @@
                         <img class="img-responsive" src={{ book.coverURL }} alt="prewiew">
                     </a>
                 </div>
-                <div class="col-xs-4 col-md-8">
+                <div class="col-xs-4 col-md-7">
                     <a href="{{ book.bookURL }}">
                         <h4 class="product-name"><strong>{{ book.title }}</strong></h4>
                     </a>
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-2 col-md-2">
+                <div class="col-xs-2 col-md-3">
                     <h4>Datos del libro</h4>
                     <p>
                         <small>Encuadernación: {{ book.binding }}</small>
@@ -80,6 +80,9 @@
                     </p>
                     <p>
                         <small>Idioma: {{ book.language }}</small>
+                    </p>
+                    <p>
+                        <small>Editorial: {{ book.editorial }}</small>
                     </p>
                 </div>
             </div>
