@@ -11,11 +11,12 @@ from whoosh.index import open_dir
 from whoosh.qparser import MultifieldParser
 from .models import Book, Rating, User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Sum
+from django.db.models import Avg
+from difflib import SequenceMatcher
 
 
 def index(request):
-    books = Rating.objects.values('book').annotate(repro=Sum('rating')).order_by('-rating')
+    books = Rating.objects.values('book').annotate(puntu=Avg('rating')).order_by('-puntu')
     libros = []
     for book in books:
         libros.append(Book.objects.get(id=book['book']))
@@ -124,16 +125,22 @@ def load_rs(request):
         bookrecom = {}
         for book in books:
             if ratings.filter(book=book.id).first() is None:
-                puntu = 0
+                total = 0.0
+                count = 0
                 for rating in ratings:
-                    ratpuntu = 0
+                    actual = 0
                     if rating.book.category == book.category:
-                        ratpuntu += 3
+                        actual += 3
                     if rating.book.author == book.author:
-                        ratpuntu += 2
-                    ratpuntu *= rating.rating
-                    puntu += ratpuntu
-                bookrecom[book.id] = puntu
+                        actual += 2
+                    similarity = SequenceMatcher(None, rating.book.title, book.title).ratio()
+                    if similarity > 0.75:
+                        actual += 1
+                    actual *= rating.rating
+                    total += actual
+                    count += 1
+                total = total / count
+                bookrecom[book.id] = total
         sortedrecom = sorted(bookrecom.items(), key=lambda x: x[1], reverse=True)[:10]
         userrecom[idusu] = sortedrecom
     shelf['userrecom'] = userrecom
@@ -149,6 +156,7 @@ def recommendations(request):
     shelf = shelve.open('dataRS.dat')
     try:
         recom = shelf['userrecom'][idusu]
+        print(recom)
         books = []
         for recommendation in recom:
             book = models.Book.objects.filter(id=recommendation[0]).first()
@@ -232,6 +240,7 @@ def rating(request):
             return render(request, 'rated.html', {})
         form = ratingForm(initial={'bookId': bookId})
         return render(request, 'rating.html', {'name': b.title, 'form': form})
+
 
 def ratedBooks(request):
     loggedId = request.session.get('loggedId', None)
