@@ -20,7 +20,7 @@ def index(request):
     libros = []
     for book in books:
         libros.append(Book.objects.get(id=book['book']))
-    return render(request, 'list_book.html', {'books': libros[:10]})
+    return render(request, 'list_book.html', {'books': libros[:10], 'title': 'Libros mejor valorados'})
 
 
 def populate(request):
@@ -88,7 +88,7 @@ def list_book(request):
     except EmptyPage:
         books = paginator.page(paginator.num_pages)
 
-    return render(request, 'list_book.html', {'books': books})
+    return render(request, 'list_book.html', {'books': books, 'title': 'Todos los libros'})
 
 
 def search(request):
@@ -104,7 +104,7 @@ def search(request):
                 for r in results:
                     books.append(models.Book.objects.get(id=r["id"]))
 
-            return render(request, 'list_book.html', {'books': books})
+            return render(request, 'list_book.html', {'books': books, 'title': 'Libros encontrados'})
     else:
         form = searchForm()
 
@@ -164,7 +164,7 @@ def recommendations(request):
     except:
         books = []
     shelf.close()
-    return render(request, 'list_book.html', {'books': books})
+    return render(request, 'list_book.html', {'books': books, 'title': 'Libros recomendados'})
 
 
 def create_user(request):
