@@ -7,8 +7,6 @@ from main import indexWhoosh
 scrapping_page_number = 1
 
 def scrap(url, category):
-    indexWhoosh.createSchema()
-
     total = 0
     f = urllib.request.urlopen(url)
     html = f.read()

@@ -28,6 +28,7 @@ def populate(request):
     if os.path.exists("booksIndex"):
         shutil.rmtree("booksIndex")
     models.Book.objects.all().delete()
+    indexWhoosh.createSchema()
     scrapping.scrap('https://www.casadellibro.com/libros/novela-contemporanea/128000000', 'Contemporánea')
     scrapping.scrap('https://www.casadellibro.com/libros/romantica-y-erotica/narrativa-romantica/127000000',
                     'Romántica')
