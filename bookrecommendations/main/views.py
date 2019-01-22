@@ -75,7 +75,7 @@ def aux_rating(user, rating, category):
 
 
 def list_book(request):
-    books_all = models.Book.objects.all()
+    books_all = models.Book.objects.all().order_by("id")
     page = request.GET.get('page', 1)
 
     paginator = Paginator(books_all, 10)
